@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="index, follow">
+
+  <!-- Viewport для мобильных с вырезами экрана -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- SEO & Open Graph for Memory Line -->
+  <meta name="description" content="Memory Line — онлайн-гра для розвитку послідовної пам'яті. Запам'ятовуйте послідовності картинок і слів. Грайте безкоштовно на MindWorld School.">
+
+  <!-- Open Graph (Facebook, Telegram, LinkedIn) -->
+  <meta property="og:title" content="Memory Line — тренажер послідовної пам'яті">
+  <meta property="og:description" content="Безкоштовна гра для розвитку послідовної пам'яті. Запам'ятовуйте і відтворюйте послідовності від 5 до 50 елементів.">
+  <meta property="og:image" content="https://mindworldschool.com/assets/memory-line-og.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mindworldschool.com/memory-line">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Memory Line — тренажер послідовної пам'яті онлайн">
+  <meta name="twitter:description" content="Онлайн-гра для дітей і дорослих. Тренуйте послідовну пам'ять.">
+  <meta name="twitter:image" content="https://mindworldschool.com/assets/memory-line-og.jpg">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#B68E6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+
+  <title>Memory Line — MindWorld School</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <img src="assets/logo_mindworld.png" alt="MindWorld" class="brand-left">
+    <div class="title">Memory Line</div>
+    <div class="lang-switcher">
+      <select id="langSelect">
+        <option value="ua" selected>UA</option>
+        <option value="en">EN</option>
+        <option value="ru">RU</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Settings Screen -->
+    <section id="screen-settings" class="card">
+      <div class="start-panel">
+        <h2 class="section-title">Налаштування гри</h2>
+        
+        <div class="controls-row">
+          <div class="group">
+            <label for="elementCount">Кількість елементів:</label>
+            <input id="elementCount" type="number" value="10" min="5" max="50" step="1">
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <div class="group">
+            <label for="displayMode">Тип елементів:</label>
+            <select id="displayMode">
+              <option value="images">Тільки картинки</option>
+              <option value="words">Тільки слова</option>
+              <option value="both">Картинки + Слова</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <div class="group">
+            <label for="memoryTimeMode">Час запам'ятовування:</label>
+            <select id="memoryTimeMode">
+              <option value="no-time">Без обмеження</option>
+              <option value="with-time">З таймером</option>
+            </select>
+          </div>
+          <div class="group time-group" id="memoryTimeGroup" style="display:none">
+            <label for="memorySeconds">Секунди:</label>
+            <input id="memorySeconds" type="range" value="60" min="0" max="600" step="5">
+            <span id="memoryTimeValue" class="time-value">60с</span>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <div class="group">
+            <label for="playTimeMode">Час на відповідь:</label>
+            <select id="playTimeMode">
+              <option value="no-time">Без обмеження</option>
+              <option value="with-time">З таймером</option>
+            </select>
+          </div>
+          <div class="group time-group" id="playTimeGroup" style="display:none">
+            <label for="playSeconds">Секунди:</label>
+            <input id="playSeconds" type="range" value="120" min="0" max="600" step="5">
+            <span id="playTimeValue" class="time-value">120с</span>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <button id="btnStart" class="btn-primary">Почати гру</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory Screen -->
+    <section id="screen-memory" class="card hidden">
+      <div class="flex-col">
+        <div class="topbar">
+          <button id="btnExitMemory" class="exit">Вихід</button>
+          <div>
+            <span class="badge">Екран запам'ятовування</span>
+            <span id="memoryTimerBox" class="timer-box hidden">00:00</span>
+          </div>
+          <button id="btnMemoryDone" class="secondary">Запам'ятав — почати</button>
+        </div>
+
+        <div class="memory-container" id="memoryContainer">
+          <!-- Sequence will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Play Screen -->
+    <section id="screen-play" class="card hidden">
+      <div class="flex-col">
+        <div class="topbar">
+          <button id="btnExitPlay" class="exit">Вихід</button>
+          <div>
+            <span class="badge">Гра</span>
+            <span id="playTimerBox" class="timer-box hidden">00:00</span>
+          </div>
+          <button id="btnCheckAnswer" class="btn-check">Перевірка</button>
+        </div>
+
+        <h3 class="section-subtitle">Перетягніть елементи у правильному порядку:</h3>
+        
+        <div class="slots-container" id="slotsContainer">
+          <!-- Empty slots will be rendered here -->
+        </div>
+
+        <h3 class="section-subtitle">Варіанти:</h3>
+        
+        <div class="options-tray" id="optionsTray">
+          <!-- Options will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Screen -->
+    <section id="screen-results" class="card hidden">
+      <div class="results">
+        <h2>Вітаємо!</h2>
+        <div class="success-message" id="successMessage">Ти молодець!</div>
+        <div class="stats">
+          <div class="stat">Елементів: <span id="statTotal">0</span></div>
+          <div class="stat">Спроб: <span id="statAttempts">0</span></div>
+        </div>
+        <div class="controls-row">
+          <button id="btnNewGame" class="btn-primary">Нова гра</button>
+          <button id="btnChangeSettings" class="secondary">Змінити налаштування</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Exit confirmation modal -->
+  <div id="exitModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>Завершити гру?</h3>
+      <p class="meta">Поточний прогрес не збережеться.</p>
+      <div class="controls-row">
+        <button id="exitYes">Так, вийти</button>
+        <button id="exitNo" class="secondary">Скасувати</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="app.js" defer></script>
+
+  <!-- Регистрация Service Worker для PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+      });
+    }
+  </script>
+</body>
+</html>
