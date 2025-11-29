@@ -504,22 +504,39 @@ button.btn-check {
   display: none;
 }
 
+/* Large Screen - 10 items per row */
+@media (min-width: 1200px) {
+  .memory-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 16px;
+  }
+
+  .element-card {
+    width: 100px;
+    height: 100px;
+  }
+
+  .element-number {
+    font-size: 60px;
+  }
+}
+
 /* Mobile Responsive */
 @media (max-width: 900px) {
   .memory-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 12px;
   }
-  
+
   .element-card {
     width: 100px;
     height: 100px;
   }
-  
+
   .element-number {
     font-size: 60px;
   }
-  
+
   .slots-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
